@@ -1,28 +1,23 @@
-const express = require('express');;
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
-
+const fs = require('fs');
 const app = express();
-var POST = process.env.PORT || 3001;
+var PORT = process.env.PORT || 3001;
 
-
-// These two lines are PARSING the INCOMING REQUEST OBJECT
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
-app.get('*' , (req, res) => {
-    res.sendFile(path.join(__dirname, './public/index.html'));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./public/index.html"))
+});
+app.get("/notes", (req, res) => {
+   res.sendFile(path.join(__dirname, "./public/notes.html"))
 });
 
-app.get('/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, './public/notes.html'));
-})
-
-app.get('/api/notes', (req, res) => {
-    // What logic do we need to do in our routes?
-      fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (error,notes) => {
+app.get("/api/notes", (req, res) => {
+  fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (error,notes) => {
       if (error) {
           return console.log(error)
       }
@@ -61,35 +56,29 @@ app.post("/api/notes", (req, res) => {
 });
 
 app.delete("/api/notes/:id", (req, res) => {
-    let deleteId = JSON.parse(req.params.id);
-    console.log("ID to be deleted: " ,deleteId);
-    fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (error,notes) => {
-      if (error) {
-          return console.log(error)
-      }
-     let notesArray = JSON.parse(notes);
-     for (var i=0; i<notesArray.length; i++){
-       if(deleteId == notesArray[i].id) {
-         notesArray.splice(i,1);
-         fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify(notesArray), (error, data) => {
-          if (error) {
-            return error
-          }
-          console.log(notesArray)
-          res.json(notesArray);
-        })
-       }
+  let deleteId = JSON.parse(req.params.id);
+  console.log("ID to be deleted: " ,deleteId);
+  fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (error,notes) => {
+    if (error) {
+        return console.log(error)
     }
-    
-  }); 
-  });
+   let notesArray = JSON.parse(notes);
+   for (var i=0; i<notesArray.length; i++){
+     if(deleteId == notesArray[i].id) {
+       notesArray.splice(i,1);
 
-   
+       fs.writeFile(path.join(__dirname, "./db/db.json"), JSON.stringify(notesArray), (error, data) => {
+        if (error) {
+          return error
+        }
+        console.log(notesArray)
+        res.json(notesArray);
+      })
+     }
+  }
+  
+}); 
+});
 
 
-
-
-
-
-
-app.listen(POST, () => console.log(`App listening on PORT ${PORT}`));
+app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
