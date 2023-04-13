@@ -60,7 +60,7 @@ app.delete("/api/notes/:id", (req, res) => {
   console.log("ID to be deleted: " ,deleteId);
   fs.readFile(path.join(__dirname, "./db/db.json"), "utf8", (error,notes) => {
     if (error) {
-        return console.log(error)
+       return console.log(error)
     }
    let notesArray = JSON.parse(notes);
    for (var i=0; i<notesArray.length; i++){
