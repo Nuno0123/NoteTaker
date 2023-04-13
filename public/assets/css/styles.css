@@ -4,12 +4,11 @@ body {
   margin: 0;
   padding: 0;
 }
+
 .bg-dark {
   background-color: #ae86b5 !important;
 }
-.bg-dark {
-  background-color: #ae86b5 !important;
-}
+
 .save-note {
   display: none;
 }
